@@ -310,10 +310,11 @@
 
         function copy(id) {
             const txt = document.getElementById(id).innerText;
-            navigator.clipboard.writeText(`<script src="${txt}"><\/script>`);
+            navigator.clipboard.writeText(`<inframe src="${txt}"><\/inframe>`);
             Swal.fire({ toast: true, position: 'top-end', title: 'Script Tag Disalin!', showConfirmButton: false, timer: 1000, icon: 'success' });
         }
     </script>
 </body>
+
 
 </html>
